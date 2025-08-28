@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #1e293b;
+      color: white;
+    }
+    .game {
+      text-align: center;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      margin: 20px auto;
+    }
+    .cell {
+      background: #334155;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .cell:hover {
+      background: #475569;
+    }
+    .winner {
+      font-size: 1.5rem;
+      margin-top: 15px;
+      color: #facc15;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <h1>Tic Tac Toe</h1>
+    <div class="board" id="board"></div>
+    <div class="winner" id="winner"></div>
+    <button onclick="resetGame()">Neues Spiel</button>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const winnerText = document.getElementById("winner");
+    let currentPlayer = "X";
+    let cells = ["", "", "", "", "", "", "", "", ""];
+
+    function renderBoard() {
+      board.innerHTML = "";
+      cells.forEach((cell, index) => {
+        const div = document.createElement("div");
+        div.classList.add("cell");
+        div.textContent = cell;
+        div.addEventListener("click", () => makeMove(index));
+        board.appendChild(div);
+      });
+    }
+
+    function makeMove(index) {
+      if (cells[index] || checkWinner()) return;
+      cells[index] = currentPlayer;
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      renderBoard();
+      const winner = checkWinner();
+      if (winner) {
+        winnerText.textContent = `🎉 Spieler ${winner} hat gewonnen!`;
+      } else if (!cells.includes("")) {
+        winnerText.textContent = "🤝 Unentschieden!";
+      }
+    }
+
+    function checkWinner() {
+      const winningCombos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      for (let combo of winningCombos) {
+        const [a,b,c] = combo;
+        if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+          return cells[a];
+        }
+      }
+      return null;
+    }
+
+    function resetGame() {
+      cells = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      winnerText.textContent = "";
+      renderBoard();
+    }
+
+    renderBoard();
+  </script>
+</body>
+</html>
